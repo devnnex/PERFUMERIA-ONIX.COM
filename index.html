@@ -1,0 +1,598 @@
+<!DOCTYPE html> 
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Onix Perfumería - Fidelidad</title>
+
+<!-- 🧩 Favicon clásico -->
+<link rel="icon" type="image/png" href="./images/favicon.png">
+
+<!-- 📱 Ícono de app (iOS / Android) -->
+<link rel="apple-touch-icon" href="./images/favicon.png">
+
+<!-- 🧭 Configuración PWA -->
+<meta name="theme-color" content="#000000">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Arepas Dog Burger">
+
+<!-- 📜 Manifest -->
+<link rel="manifest" href="./manifest.json">
+
+<style>
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: linear-gradient(135deg, #d32f2f, #f57c00, #ffeb3b);
+        min-height: 100vh;
+        padding: 20px;
+        padding-bottom: 140px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        color: white;
+        box-sizing: border-box;
+    }
+
+    #logo {
+        width: 160px;
+        margin-top: 10px;
+    }
+
+    h2 {
+        margin-bottom: 20px;
+        font-size: 14px;
+        color: #ffe6e6;
+    }
+
+    .grid {
+        width: 100%;
+        max-width: 420px;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+    }
+
+    .cuadro {
+        background: rgba(255,255,255,0.9);
+        border-radius: 16px;
+        width: 100%;
+        padding-top: 100%;
+        position: relative;
+        cursor: pointer;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.25);
+        transition: 0.15s ease;
+    }
+
+    .cuadro:active {
+        transform: scale(0.95);
+    }
+
+    .contenido {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .contenido img {
+        width: 60%;
+        opacity: 0.25;
+    }
+
+    .marcado {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 90px;
+        font-weight: bold;
+        color: #555;
+    }
+
+    .burbuja-precio {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        background: red;
+        padding: 6px 10px;
+        border-radius: 20px;
+        color: white;
+        font-size: 14px;
+        font-weight: bold;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+    }
+
+    /* ----------------------------- */
+    /* MODALES */
+    /* ----------------------------- */
+    .overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.6);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+        z-index: 10;
+    }
+
+    .modal {
+        background: white;
+        padding: 25px;
+        border-radius: 15px;
+        width: 100%;
+        max-width: 340px;
+        text-align: center;
+        color: black;
+        position: relative;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    }
+.modal input {
+    width: 90%;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 18px;
+    text-align: center;
+    margin-top: 10px;
+
+    /* 🔥 Corrección: centrar el input totalmente */
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+
+    .modal button {
+        margin-top: 15px;
+        width: 100%;
+        padding: 12px;
+        border: none;
+        border-radius: 8px;
+        background: black;
+        color: white;
+        font-size: 16px;
+    }
+
+    /* ❌ BOTÓN X PARA CERRAR MODAL */
+    .cerrar-modal {
+        position: absolute;
+        top: 8px;
+        right: 10px;
+        font-size: 24px;
+        font-weight: bold;
+        color: black;
+        cursor: pointer;
+    }
+
+    /* CONFETTI */
+    #confettiCanvas {
+        position: fixed;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        display: none;
+    }
+
+    footer {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        background: rgba(0,0,0,0.75);
+        color: white;
+        text-align: center;
+        padding: 15px 10px;
+        font-size: 14px;
+        line-height: 1.4;
+        backdrop-filter: blur(4px);
+    }
+
+    .whatsapp {
+        color: #25D366;
+        font-weight: bold;
+        font-size: 16px;
+    }
+
+    .btn-reset {
+    margin-top: 12px;
+    background: #000;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    width: 100%;
+    max-width: 420px;
+    box-shadow: 0 3px 7px rgba(0,0,0,0.35);
+    transition: 0.2s ease;
+}
+
+.btn-reset:active {
+    transform: scale(0.96);
+}
+
+</style>
+</head>
+<body>
+
+<img id="logo" src="images/logo.png" alt="Onix Perfumería">
+<button id="btnReset" class="btn-reset">🔄 Refrescar tarjeta</button>
+
+<h2>Perfumes inspirados en las mejores fragancias del mundo</h2>
+
+<canvas id="confettiCanvas"></canvas>
+
+<div class="grid" id="grid"></div>
+
+<!-- Modal Clave -->
+<div id="overlayPass" class="overlay">
+    <div class="modal">
+        <span class="cerrar-modal" onclick="cerrarModalClave()">✖</span>
+        <h3>Ingrese clave de 4 dígitos</h3>
+        <input type="password" id="clave" maxlength="4" inputmode="numeric" />
+        <button onclick="validarClave()">Validar</button>
+    </div>
+</div>
+
+<!-- Modal Precio -->
+<div id="overlayPrecio" class="overlay">
+    <div class="modal">
+        <h3>Ingrese valor del perfume</h3>
+        <input type="number" id="precioInput" placeholder="Ej: 13" />
+        <button onclick="guardarPrecio()">Guardar</button>
+    </div>
+</div>
+
+<footer>
+    <div><strong>Calle 49 No. 17-22</strong></div>
+    <div class="whatsapp">📱 3232233518</div>
+    <div>onixperfumeria03@gmail.com</div>
+    <div>Br. Colombia – B/bermeja</div>
+</footer>
+
+<!-- SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+const PATRON = "5678"; 
+let casillaSeleccionada = null;
+
+// 🔥 Cargar desde LocalStorage o crear arrays nuevos
+let estados = JSON.parse(localStorage.getItem("estados")) || Array(10).fill(false);
+let precios = JSON.parse(localStorage.getItem("precios")) || Array(10).fill("");
+let fechas = JSON.parse(localStorage.getItem("fechas")) || Array(10).fill("");
+
+const grid = document.getElementById("grid");
+
+/* ----------------------------- */
+/* GUARDAR EN LOCAL STORAGE */
+/* ----------------------------- */
+function guardarLocal() {
+    localStorage.setItem("estados", JSON.stringify(estados));
+    localStorage.setItem("precios", JSON.stringify(precios));
+    localStorage.setItem("fechas", JSON.stringify(fechas));
+}
+
+/* ----------------------------- */
+/* FORMATEAR FECHA */
+/* ----------------------------- */
+function formatearFecha() {
+    const fecha = new Date();
+    const dias = ["Domingo","Lunes","Martes","Miércoles","Jueves","Viernes","Sábado"];
+    const meses = ["Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","Dic"];
+
+    let diaSemana = dias[fecha.getDay()];
+    let diaMes = fecha.getDate();
+    let mes = meses[fecha.getMonth()];
+    let año = fecha.getFullYear();
+
+    let horas = fecha.getHours();
+    let minutos = fecha.getMinutes().toString().padStart(2,"0");
+    let ampm = horas >= 12 ? "PM" : "AM";
+    horas = horas % 12;
+    horas = horas ? horas : 12;
+
+    return `${diaSemana} ${diaMes} ${mes} ${año} – ${horas}:${minutos} ${ampm}`;
+}
+
+/* ----------------------------- */
+/* RENDER PRINCIPAL */
+/* ----------------------------- */
+function render() {
+    grid.innerHTML = "";
+
+    estados.forEach((marcado, i) => {
+        const div = document.createElement("div");
+        div.className = "cuadro";
+        div.onclick = () => seleccionarCasilla(i);
+
+        const contenido = document.createElement("div");
+        contenido.className = "contenido";
+
+        const logo = document.createElement("img");
+        logo.src = "images/logo1.png";
+        contenido.appendChild(logo);
+
+        if (marcado) {
+            const x = document.createElement("div");
+            x.className = "marcado";
+            x.innerText = "X";
+            contenido.appendChild(x);
+        }
+
+        if (precios[i]) {
+            const burbuja = document.createElement("div");
+            burbuja.className = "burbuja-precio";
+            burbuja.innerText = "$" + precios[i];
+            div.appendChild(burbuja);
+        }
+
+        if (fechas[i]) {
+            const fechaDiv = document.createElement("div");
+            fechaDiv.style.position = "absolute";
+            fechaDiv.style.bottom = "8px";
+            fechaDiv.style.width = "100%";
+            fechaDiv.style.textAlign = "center";
+            fechaDiv.style.fontSize = "11px";
+            fechaDiv.style.color = "#444";
+            fechaDiv.style.fontWeight = "bold";
+            fechaDiv.innerText = fechas[i];
+            div.appendChild(fechaDiv);
+        }
+
+        div.appendChild(contenido);
+        grid.appendChild(div);
+    });
+}
+
+render();
+
+/* ----------------------------- */
+/* SELECCIÓN DE CASILLA */
+/* ----------------------------- */
+function seleccionarCasilla(i) {
+    casillaSeleccionada = i;
+    document.getElementById("overlayPass").style.display = "flex";
+}
+
+/* ----------------------------- */
+/* MODAL CLAVE */
+/* ----------------------------- */
+function cerrarModalClave() {
+    document.getElementById("overlayPass").style.display = "none";
+    document.getElementById("clave").value = "";
+}
+
+function validarClave() {
+    const clave = document.getElementById("clave").value;
+
+    if (clave === PATRON) {
+        document.getElementById("overlayPass").style.display = "none";
+        document.getElementById("overlayPrecio").style.display = "flex";
+    } else {
+        Swal.fire({
+            icon: "warning",
+            title: "Acceso restringido",
+            text: "Solo el dueño del negocio puede marcar estas casillas.",
+            confirmButtonColor: "#f57c00",
+            background: "#ffffff",
+            color: "#000000"
+        });
+    }
+
+    document.getElementById("clave").value = "";
+}
+
+/* ----------------------------- */
+/* GUARDAR PRECIO Y MARCAR CASILLA */
+/* ----------------------------- */
+function guardarPrecio() {
+    const precio = document.getElementById("precioInput").value;
+
+    if (precio && !isNaN(precio)) {
+        estados[casillaSeleccionada] = true;
+        precios[casillaSeleccionada] = precio;
+        fechas[casillaSeleccionada] = formatearFecha();
+    }
+
+    document.getElementById("overlayPrecio").style.display = "none";
+    document.getElementById("precioInput").value = "";
+
+    guardarLocal(); // 🟡 GUARDAR CAMBIOS
+    render();
+
+    // Si marcó la última casilla (9)
+    if (casillaSeleccionada === 9 && estados[9]) {
+        mostrarModalFelicidades();
+        lanzarConfetti();
+    }
+}
+
+/* ----------------------------- */
+/* CONFETTI + MODAL ÉXITO */
+/* ----------------------------- */
+function mostrarModalFelicidades() {
+    Swal.fire({
+        title: "¡Felicidades!",
+        html: `
+            <p>Has desbloqueado un perfume totalmente gratis 🎁</p>
+            <canvas id="confettiModal" style="width:100%;height:200px;"></canvas>
+        `,
+        background: "#ffffff",
+        color: "#000000",
+        confirmButtonText: "Aceptar",
+        confirmButtonColor: "#f57c00",
+        icon: "success",
+        didOpen: () => {
+            const ring = document.querySelector('.swal2-success-ring');
+            if (ring) ring.style.borderColor = "#f57c00";
+            document
+                .querySelectorAll('.swal2-success-line-tip, .swal2-success-line-long')
+                .forEach(el => el.style.backgroundColor = "#f57c00");
+
+            lanzarConfettiEnModal();
+        }
+    });
+}
+
+/* Confetti dentro del modal */
+function lanzarConfettiEnModal() {
+    const canvas = document.getElementById("confettiModal");
+    const ctx = canvas.getContext("2d");
+
+    canvas.width = canvas.clientWidth;
+    canvas.height = canvas.clientHeight;
+
+    const piezas = [];
+    for (let i = 0; i < 140; i++) {
+        piezas.push({
+            x: Math.random() * canvas.width,
+            y: Math.random() * -canvas.height,
+            w: 8,
+            h: 8,
+            color: `hsl(${Math.random()*360}, 100%, 50%)`,
+            velY: Math.random() * 3 + 2
+        });
+    }
+
+    function animar() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        piezas.forEach(p => {
+            p.y += p.velY;
+            if (p.y > canvas.height) p.y = -10;
+
+            ctx.fillStyle = p.color;
+            ctx.fillRect(p.x, p.y, p.w, p.h);
+        });
+        requestAnimationFrame(animar);
+    }
+
+    animar();
+}
+
+/* Confetti de pantalla completa */
+function lanzarConfetti() {
+    const canvas = document.getElementById("confettiCanvas");
+    const ctx = canvas.getContext("2d");
+
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    canvas.style.display = "block";
+
+    const piezas = [];
+    for (let i = 0; i < 180; i++) {
+        piezas.push({
+            x: Math.random() * canvas.width,
+            y: Math.random() * -canvas.height,
+            w: 10,
+            h: 10,
+            color: `hsl(${Math.random()*360}, 100%, 50%)`,
+            velY: Math.random() * 4 + 2
+        });
+    }
+
+    function animar() {
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+        piezas.forEach(p => {
+            p.y += p.velY;
+            ctx.fillStyle = p.color;
+            ctx.fillRect(p.x, p.y, p.w, p.h);
+        });
+        requestAnimationFrame(animar);
+    }
+
+    animar();
+    setTimeout(() => canvas.style.display = "none", 5000);
+}
+
+// 🧹 RESETEAR TODA LA TARJETA (CON PATRÓN 5678)
+document.getElementById("btnReset").addEventListener("click", () => {
+    Swal.fire({
+        title: "¿Reiniciar tarjeta?",
+        text: "Solo el dueño puede hacerlo ingresando el patrón.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#d32f2f",
+        cancelButtonColor: "#555",
+        confirmButtonText: "Ingresar patrón",
+        cancelButtonText: "Cancelar",
+        background: "#ffffff",
+        color: "#000000"
+    }).then((result) => {
+        if (result.isConfirmed) {
+
+            // Paso 2 → Solicitar patrón
+            Swal.fire({
+                title: "Ingrese el patrón",
+                input: "password",
+                inputAttributes: {
+                    maxlength: 4,
+                    inputmode: "numeric",
+                    style: "font-size: 28px; text-align:center; letter-spacing: 8px;"
+                },
+                confirmButtonText: "Validar",
+                showCancelButton: true,
+                confirmButtonColor: "#f57c00",
+                cancelButtonColor: "#555",
+                background: "#ffffff",
+                color: "#000000"
+            }).then(input => {
+
+                if (!input.isConfirmed) return;
+
+                const patronIngresado = input.value;
+
+                // Patrón correcto
+                if (patronIngresado === "5678") {
+
+                    // Reiniciar arrays
+                    estados = Array(10).fill(false);
+                    precios = Array(10).fill("");
+                    fechas = Array(10).fill("");
+
+                    // Limpiar LocalStorage
+                    guardarLocal();
+
+                    // Renderizar limpio
+                    render();
+
+                    Swal.fire({
+                        icon: "success",
+                        title: "Tarjeta reiniciada",
+                        text: "Se restableció correctamente.",
+                        confirmButtonColor: "#f57c00",
+                        background: "#ffffff",
+                        color: "#000000"
+                    });
+
+                } else {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Patrón incorrecto",
+                        text: "No tienes permiso para reiniciar la tarjeta.",
+                        confirmButtonColor: "#d32f2f",
+                        background: "#ffffff",
+                        color: "#000000"
+                    });
+                }
+
+            });
+
+        }
+    });
+});
+
+
+</script>
+
+
+</body>
+</html>
