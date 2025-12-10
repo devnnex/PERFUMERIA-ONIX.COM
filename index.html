@@ -21,7 +21,7 @@
 <!-- 📜 Manifest -->
 <link rel="manifest" href="./manifest.json">
 
-<style>
+<style> 
     body {
         margin: 0;
         font-family: Arial, sans-serif;
@@ -261,6 +261,54 @@
 
 <!-- SweetAlert2 -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+      <script>
+// CONTACTO DEL PROGRAMADOR (cámbialo)
+const CONTACTO = "te recomendamos ponerte en contacto con el programador para que puedas tener para siempre desde ahora una tarjeta digital Bonita, y si les interesa dejar de llevar el inventario en el cuaderno de manera manueal, dejame saber, podremos tener una reunion personalmente y poder dialogar al respecto y establecer un acuerdo, viene 2026 y todo se esta digitalizando. Feliz Dia, bendiciones";
+
+// Mostrar alerta y luego bloquear página
+function bloquearPagina() {
+  Swal.fire({
+    icon: "info",
+    title: "Información importante",
+    text: "Por favor ponerse en contacto con el programador para llegar a un acuerdo.",
+    confirmButtonText: "Entendido",
+    allowOutsideClick: false,
+    allowEscapeKey: false
+  }).then(() => {
+
+    // Crear capa que bloquea toda la pantalla
+    const overlay = document.createElement("div");
+    overlay.id = "bloqueoTotal";
+    overlay.style.position = "fixed";
+    overlay.style.top = "0";
+    overlay.style.left = "0";
+    overlay.style.width = "100%";
+    overlay.style.height = "100%";
+    overlay.style.background = "rgba(0,0,0,0.9)";
+    overlay.style.color = "white";
+    overlay.style.display = "flex";
+    overlay.style.flexDirection = "column";
+    overlay.style.justifyContent = "center";
+    overlay.style.alignItems = "center";
+    overlay.style.fontSize = "20px";
+    overlay.style.zIndex = "999999";
+
+    overlay.innerHTML = `
+      <p><b>ACCESO BLOQUEADO</b></p>
+      <p>${CONTACTO}</p>
+    `;
+
+    document.body.appendChild(overlay);
+
+    // Evitar scroll
+    document.body.style.overflow = "hidden";
+  });
+}
+
+// Ejecutar de inmediato
+bloquearPagina();
+</script>
+    
 <script>
 const PATRON = "5678"; 
 let casillaSeleccionada = null;
@@ -596,3 +644,4 @@ document.getElementById("btnReset").addEventListener("click", () => {
 
 </body>
 </html>
+
